@@ -1,7 +1,7 @@
 {
     "mosquitto": {
         "user": "admin",
-        "passw": "dalisan19780",
+        "passwd": "dalisan19780",
         "port": 1883,
         "container_name": "mqtt" 
         },
