@@ -92,7 +92,7 @@ sudo docker cp mqtt-broker:/mosquitto/config/mosquitto.passwd "$persistence_dir/
 
 sudo docker stop mqtt-broker
 
-sudo docker run -it -p 1883:1883 -p 9001:9001 --name mqtt-broker --restart=always \
+sudo docker create -it -p 1883:1883 -p 9001:9001 --name mqtt-broker --restart=always \
  -v "$persistence_dir/mosquitto/config/mosquitto.passwd":/mosquitto/config/mosquitto.passwd \
  -v "$persistence_dir/mosquitto/config/mosquitto.conf":/mosquitto/config/mosquitto.conf \
  -v "$persistence_dir/mosquitto/data/":/mosquitto/data \
@@ -101,6 +101,13 @@ sudo docker run -it -p 1883:1883 -p 9001:9001 --name mqtt-broker --restart=alway
 
 
 # NODE RED INSTALLATION/RE-INSTALLATION
+
+sudo mkdir -p "$persistence_dir/node_red_data"
+sudo chown -R 1000:1000 "$persistence_dir/node_red_data"
+sudo docker create -it -p 1880:1880 --restart=always -v "$persistence_dir/node_red_data":/data --name nodered nodered/node-red:latest
+
+sudo docker exec -it nodered npx node-red admin hash-pw
+
 
 
 echo "end"
