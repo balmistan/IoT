@@ -1,9 +1,9 @@
 #! /bin/bash
 
-# SYSTEM UPDATE
-# sudo apt update && sudo apt -y upgrade
+# SYSTEM UPDATE ##################################################################################
+sudo apt update && sudo apt -y upgrade
 
-# GLOBAL SETTINGS
+# GLOBAL SETTINGS ################################################################################
 
 current_dir="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
@@ -17,18 +17,7 @@ persistence_dir="/usr/persistence"
 
 echo "containers persistent directory: $persistence_dir"
 
-# DOCKER INSTALLATION 
-
-if ! docker -v &> /dev/null
-then
-	echo "Install Docker\n\n"
-	curl -sSL https://get.docker.com | sh
-
-	# check docker
-	sudo docker run hello-world
-fi
-
-# JQ INSTALLATION
+# JQ INSTALLATION #################################################################################
 
 program="jq"
 if [ "$(which $program)" == "" ]; 
@@ -42,7 +31,19 @@ then
     fi
 fi
 
+# DOCKER INSTALLATION #############################################################################
+
+if ! docker -v &> /dev/null
+then
+	echo "Install Docker\n\n"
+	curl -sSL https://get.docker.com | sh
+
+	# check docker
+	sudo docker run hello-world
+fi
+
 # PORTAINER INSTALLATION/RE-INSTALLATION
+
 if [ $( docker ps -a | grep portainer | wc -l ) -gt 0 ]; 
 then
 sudo docker stop portainer
@@ -102,12 +103,22 @@ sudo docker create -it -p 1883:1883 -p 9001:9001 --name mqtt-broker --restart=al
 
 # NODE RED INSTALLATION/RE-INSTALLATION
 
+if [ $( docker ps -a | grep nodered | wc -l ) -gt 0 ]; 
+then
+sudo docker stop nodered
+sudo docker rm nodered
+fi
+
 sudo mkdir -p "$persistence_dir/node_red_data"
 sudo chown -R 1000:1000 "$persistence_dir/node_red_data"
 sudo docker create -it -p 1880:1880 --restart=always -v "$persistence_dir/node_red_data":/data --name nodered nodered/node-red:latest
-
-sudo docker exec -it nodered npx node-red admin hash-pw
+ 
+sudo docker start mqtt-broker
+sudo docker start nodered
+sudo docker exec -it nodered npx node-red admin hash-pw sh
 
 
 
 echo "end"
+
+read -p "Press enter to exit"
