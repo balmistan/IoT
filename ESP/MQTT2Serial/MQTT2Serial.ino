@@ -60,13 +60,15 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
+  String hexconv = "0123456789ABCDEF";
+  byte data, temp;
 
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-    mySerial.print((char)payload[i]);
+  for (byte i = 0; i < length - 1; i = i + 3) {
+    mySerial.print(hexconv.indexOf((char)payload[i]), 16);
+    mySerial.print(hexconv.indexOf((char)payload[i + 1]), 16);
   }
-  Serial.println();
   mySerial.println();
+  
 }
 
 void reconnect() {
@@ -94,7 +96,7 @@ void reconnect() {
 }
 
 void setup() {
-  pinMode(BUILTIN_LED, OUTPUT);  // Initialize the BUILTIN_LED pin as an output
+  pinMode(LED_BUILTIN, OUTPUT);  // Initialize the BUILTIN_LED pin as an output
   setup_serial_ports();
   setup_wifi();
   client.setServer(mqtt_server, mqtt_port);
@@ -109,21 +111,22 @@ void loop() {
   client.loop();
   boolean receved_msg = false;
   char buffer[20];
-  int i=0;
+  byte i = 0;
+  byte test = 0;
 
-  
-    while(mySerial.available() > 0) {
-      receved_msg=true;
+  while (Serial.available() > 0) {
+    test++;
+    receved_msg = true;
     // read the incoming byte:
-    buffer[i++] = mySerial.read();
-    }
-    buffer[i]='\0';
+    buffer[i++] = Serial.read();
+  }
+  buffer[i] = '\0';
   if (receved_msg) {
     receved_msg = false;
-    snprintf(msg, MSG_BUFFER_SIZE, "hello world #%ld", value);
     Serial.print("Publish message: ");
-    Serial.println(msg);
-    client.publish("toNodeRed", msg);
+    Serial.println(buffer);
+    Serial.println(test);
+    client.publish("toNodeRed", buffer);
   }
 }
 
