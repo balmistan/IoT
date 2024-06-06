@@ -117,7 +117,9 @@ sudo docker start mqtt-broker
 sudo docker start nodered
 sudo docker exec -it nodered npx node-red admin hash-pw sh
 
-
+sudo mkdir -p "$persistence_dir/home-assistant"
+sudo chown -R 8123:8123 "$persistence_dir/home-assistant"
+docker run -d --name="home-assistant" -p 8123:8123 -v "$persistence_dir/home-assistant":/config -v "$persistence_dir/home-assistant":/etc/localtime:ro --net=host homeassistant/home-assistant
 
 echo "end"
 
