@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # SYSTEM UPDATE ##################################################################################
-sudo apt update && sudo apt -y upgrade
+# sudo apt update && sudo apt -y upgrade
 
 # GLOBAL SETTINGS ################################################################################
 
@@ -62,13 +62,16 @@ sudo chown -R 9000:9000 "$persistence_dir/portainer_data"
 
 sudo docker start portainer
 
+
+
 # MOSQUITTO INSTALLATION/RE-INSTALLATION
+if [ $(jq -r '.mosquitto.reinstall' $data_file) ]
+then
 if [ $( docker ps -a | grep mqtt-broker | wc -l ) -gt 0 ]; 
 then
 sudo docker stop mqtt-broker
 sudo docker rm mqtt-broker
 fi
-
 
 sudo mkdir -p "$persistence_dir/mosquitto/log"
 sudo mkdir -p "$persistence_dir/mosquitto/data"
@@ -99,15 +102,16 @@ sudo docker create -it -p 1883:1883 -p 9001:9001 --name mqtt-broker --restart=al
  -v "$persistence_dir/mosquitto/data/":/mosquitto/data \
  -v "$persistence_dir/mosquitto/log":/mosquitto/log \
  eclipse-mosquitto:latest
-
+fi
 
 # NODE RED INSTALLATION/RE-INSTALLATION
 
-if [ $( docker ps -a | grep nodered | wc -l ) -gt 0 ]; 
-then
-sudo docker stop nodered
-sudo docker rm nodered
-fi
+#if [ $( docker ps -a | grep nodered | wc -l ) -gt 0 ]; 
+#then
+# sudo docker stop --name nodered
+# sudo docker rm --name nodered
+# fi
+echo "installing node-red................................................"
 
 sudo mkdir -p "$persistence_dir/node_red_data"
 sudo chown -R 1000:1000 "$persistence_dir/node_red_data"
@@ -117,9 +121,12 @@ sudo docker start mqtt-broker
 sudo docker start nodered
 sudo docker exec -it nodered npx node-red admin hash-pw sh
 
-sudo mkdir -p "$persistence_dir/home-assistant"
-sudo chown -R 8123:8123 "$persistence_dir/home-assistant"
-docker run -d --name="home-assistant" -p 8123:8123 -v "$persistence_dir/home-assistant":/config -v "$persistence_dir/home-assistant":/etc/localtime:ro --net=host homeassistant/home-assistant
+
+
+
+#sudo mkdir -p "$persistence_dir/home-assistant"
+#sudo chown -R 8123:8123 "$persistence_dir/home-assistant"
+#docker run -d --name="home-assistant" -p 8123:8123 -v "$persistence_dir/home-assistant":/config -v "$persistence_dir/home-assistant":/etc/localtime:ro --net=host homeassistant/home-assistant
 
 echo "end"
 
