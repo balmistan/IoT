@@ -39,9 +39,9 @@ sudo chown -R 1883:1883 "$persistence_dir/mosquitto/"
 
 echo "test........"
 
-#sudo docker run --rm -d -p 1883:1883 -p 9001:9001 \
-# --name $(jq -r '.mosquitto.container_name' $data_file) \
-# eclipse-mosquitto:latest \
+sudo docker run --rm -d -p 1883:1883 -p 9001:9001 \
+ --name mqtt \
+ eclipse-mosquitto:latest \
 
 sudo docker exec -it mqtt mosquitto_passwd -c -b /mosquitto/config/mosquitto.passwd admin dalisan19780
 
