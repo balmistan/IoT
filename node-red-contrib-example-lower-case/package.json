@@ -1,0 +1,16 @@
+{
+  "name": "red-contrib-example-lower-case",
+  "version": "1.0.0",
+  "description": "an easy example to create a custom node for node-red",
+  "main": "lower-case.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+"node-red" : {
+        "nodes": {
+            "lower-case": "lower-case.js"
+        }
+    }
+}

@@ -1,20 +1,13 @@
 {
     "mosquitto": {
-        "reinstall":false,
         "user": "admin",
         "passwd": "dalisan19780",
-        "port": 1883,
         "container_name": "mqtt" 
         },
      "portainer": {
-        "reinstall":false,
-        "port": 9000,
-        "ssh_port": 9443,
         "container_name": "portainer"
         },
-     "node-red": {
-        "reinstall": true,
-        "port": 1880,
+     "nodered": {
         "container_name": "node-red"
         }
 }
