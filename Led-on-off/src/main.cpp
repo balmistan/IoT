@@ -5,6 +5,10 @@
 #include "wifi_mqtt_connect.h"
 #include <ArduinoJson.h>
 
+void callback(char *topic, byte *payload, unsigned int length);
+void commands(char *json_in);
+void setup_wifi();
+
 WiFiClient espClient;
 PubSubClient client(espClient);
 unsigned long lastMsg = 0;
@@ -18,9 +22,9 @@ void setup()
   setup_wifi();
   client.setServer(mqtt_server, mqtt_port);
   client.setCallback(callback);
-  pinMode(D0, INPUT);
+  pinMode(D0, OUTPUT);
   pinMode(D1, OUTPUT);
-  pinMode(D2, INPUT);
+  pinMode(D2, OUTPUT);
 }
 
 void commands(char *json_in)
@@ -28,9 +32,14 @@ void commands(char *json_in)
   JsonDocument doc;
   deserializeJson(doc, json_in);
 
+  byte line = doc["gpio"];
+  byte value = doc["value"];
+
   if (!strcmp(doc["cmd"], "DW"))
   {
-    dw(doc["pin"], doc["value"]);
+    digitalWrite(line, value);
+  }else if(doc["cmd"], "AW"){
+    analogWrite(line, value);
   }
   else
   {
@@ -38,14 +47,6 @@ void commands(char *json_in)
   }
 }
 
-void dw(char *pin, byte value)
-{
-  if (!strcmp(pin, "D1"))
-  {
-    digitalWrite(D1, value);
-    client.publish("toNodeRed", "D1 receved command!");
-  }
-}
 
 void setup_wifi()
 {
@@ -88,78 +89,6 @@ void callback(char *topic, byte *payload, unsigned int length)
 
   commands(msg2);
 
-  /*if (!strcmp(msg2, "DRD0"))
-  {
-    if (digitalRead(D0))
-    {
-      client.publish("D0State", strcpy(msg2, "[true]"));
-    }
-    else
-    {
-      client.publish("D0State", strcpy(msg2, "[false]"));
-    }
-  }
-  else if (!strcmp(msg2, "DWBH"))
-  {
-    digitalWrite(LED_BUILTIN, HIGH);
-    client.publish("toNodeRed", strcpy(msg2, "[Builtin,HIGH]"));
-  }
-  else if (!strcmp(msg2, "DWD1H"))
-  {
-    digitalWrite(D1, HIGH);
-  }
-  else if (!strcmp(msg2, "DWD2H"))
-  {
-    digitalWrite(D2, HIGH);
-  }
-  else if (!strcmp(msg2, "DWD3H"))
-  {
-    digitalWrite(D3, HIGH);
-  }
-  else if (!strcmp(msg2, "DWD4H"))
-  {
-    digitalWrite(D4, HIGH);
-  }
-  else if (!strcmp(msg2, "DWBL"))
-  {
-    digitalWrite(LED_BUILTIN, LOW);
-    client.publish("toNodeRed", strcpy(msg2, "[Buitin,LOW]"));
-  }
-  else if (!strcmp(msg2, "DWD1L"))
-  {
-    digitalWrite(D1, LOW);
-  }
-  else if (!strcmp(msg2, "DWD2L"))
-  {
-    digitalWrite(D4, LOW);
-  }
-  else if (!strcmp(msg2, "DWD4L"))
-  {
-    digitalWrite(D2, LOW);
-  }
-  else if (!strcmp(msg2, "DWD3L"))
-  {
-    digitalWrite(D3, LOW);
-  }
-  else if (!strcmp(msg2, "DWD4L"))
-  {
-    digitalWrite(D4, LOW);
-  }
-  else if (!strcmp(msg2, "DRD2"))
-  {
-    if (digitalRead(D2))
-    {
-      client.publish("D2State", strcpy(msg2, "[true]"));
-    }
-    else
-    {
-      client.publish("D2State", strcpy(msg2, "[false]"));
-    }
-  }
-  else
-  {
-    client.publish("toNodeRed", "command not found!");
-  }*/
 }
 
 void reconnect()
@@ -176,7 +105,7 @@ void reconnect()
     {
       Serial.println("connected");
       // ... and resubscribe
-      client.subscribe("fromNodeRed");
+      client.subscribe("toDevice_0");
     }
     else
     {
@@ -188,8 +117,6 @@ void reconnect()
     }
   }
 }
-
-
 
 void loop()
 {

@@ -1,10 +1,18 @@
 [
     {
-        "id": "34cea2e2d8f386b4",
+        "id": "10392be039c9d1b1",
+        "type": "tab",
+        "label": "NodeMCU Led Json",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7b7e46ec1a0c3394",
         "type": "mqtt out",
-        "z": "52d6d2959bf890b4",
+        "z": "10392be039c9d1b1",
         "name": "",
-        "topic": "fromNodeRed",
+        "topic": "toDevice_0",
         "qos": "",
         "retain": "",
         "respTopic": "",
@@ -13,15 +21,15 @@
         "correl": "",
         "expiry": "",
         "broker": "b588965e00983323",
-        "x": 340,
-        "y": 60,
+        "x": 1030,
+        "y": 240,
         "wires": []
     },
     {
-        "id": "adc4c9bac8b815a7",
+        "id": "1c1414db87639320",
         "type": "inject",
-        "z": "52d6d2959bf890b4",
-        "name": "OFF-D1",
+        "z": "10392be039c9d1b1",
+        "name": "OFF-D0",
         "props": [
             {
                 "p": "payload"
@@ -36,20 +44,144 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"cmd\":\"DW\",\"pin\":\"D1\",\"value\":0}",
+        "payload": "{\"cmd\":\"DW\",\"gpio\":16,\"value\":0}",
         "payloadType": "json",
-        "x": 140,
+        "x": 380,
         "y": 100,
         "wires": [
             [
-                "34cea2e2d8f386b4"
+                "7b7e46ec1a0c3394"
             ]
         ]
     },
     {
-        "id": "b696b434fc99e1df",
+        "id": "340f8a3780dc2fa9",
         "type": "inject",
-        "z": "52d6d2959bf890b4",
+        "z": "10392be039c9d1b1",
+        "name": "ON-D0",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"cmd\":\"DW\",\"gpio\":16,\"value\":1}",
+        "payloadType": "json",
+        "x": 370,
+        "y": 40,
+        "wires": [
+            [
+                "7b7e46ec1a0c3394"
+            ]
+        ]
+    },
+    {
+        "id": "2284fdd1742259f3",
+        "type": "mqtt in",
+        "z": "10392be039c9d1b1",
+        "name": "",
+        "topic": "toNodeRed",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "b588965e00983323",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 370,
+        "y": 700,
+        "wires": [
+            [
+                "86d714a5c306b917"
+            ]
+        ]
+    },
+    {
+        "id": "86d714a5c306b917",
+        "type": "debug",
+        "z": "10392be039c9d1b1",
+        "name": "debug 2",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "8fdc45f99e419078",
+        "type": "inject",
+        "z": "10392be039c9d1b1",
+        "name": "Analog D1 100",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"cmd\":\"AW\",\"gpio\":5,\"value\":100}",
+        "payloadType": "json",
+        "x": 400,
+        "y": 380,
+        "wires": [
+            [
+                "7b7e46ec1a0c3394"
+            ]
+        ]
+    },
+    {
+        "id": "1e2824570dc5291d",
+        "type": "inject",
+        "z": "10392be039c9d1b1",
+        "name": "Analog D1 200",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"cmd\":\"AW\",\"gpio\":5,\"value\":200}",
+        "payloadType": "json",
+        "x": 400,
+        "y": 440,
+        "wires": [
+            [
+                "7b7e46ec1a0c3394"
+            ]
+        ]
+    },
+    {
+        "id": "e512564dbe855c1f",
+        "type": "inject",
+        "z": "10392be039c9d1b1",
         "name": "ON-D1",
         "props": [
             {
@@ -65,58 +197,50 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"cmd\":\"DW\",\"pin\":\"D1\",\"value\":1}",
+        "payload": "{\"cmd\":\"DW\",\"gpio\":5,\"value\":1}",
         "payloadType": "json",
-        "x": 130,
-        "y": 40,
+        "x": 370,
+        "y": 320,
         "wires": [
             [
-                "34cea2e2d8f386b4"
+                "7b7e46ec1a0c3394"
             ]
         ]
     },
     {
-        "id": "ccf0c95b97b430b7",
-        "type": "mqtt in",
-        "z": "52d6d2959bf890b4",
-        "name": "",
-        "topic": "toNodeRed",
-        "qos": "0",
-        "datatype": "auto-detect",
-        "broker": "b588965e00983323",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 130,
-        "y": 200,
+        "id": "332cf81180705e07",
+        "type": "inject",
+        "z": "10392be039c9d1b1",
+        "name": "OFF-D1",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"cmd\":\"DW\",\"gpio\":5,\"value\":0}",
+        "payloadType": "json",
+        "x": 380,
+        "y": 500,
         "wires": [
             [
-                "118b47d7199ab47e"
+                "7b7e46ec1a0c3394"
             ]
         ]
-    },
-    {
-        "id": "118b47d7199ab47e",
-        "type": "debug",
-        "z": "52d6d2959bf890b4",
-        "name": "debug 2",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 340,
-        "y": 200,
-        "wires": []
     },
     {
         "id": "b588965e00983323",
         "type": "mqtt-broker",
         "name": "Handy",
-        "broker": "192.168.134.90",
+        "broker": "http://192.168.248.90/",
         "port": "1883",
         "clientid": "",
         "autoConnect": true,
